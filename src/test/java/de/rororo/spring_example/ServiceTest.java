@@ -4,18 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest
 class ServiceTest {
 
-    @MockBean
-    private RestTemplate restTemplate;
-
-    @Autowired
     private MyService service;
 
     @BeforeEach
@@ -23,7 +15,10 @@ class ServiceTest {
         final ShopProductsResponse response = new ShopProductsResponse();
         response.setProducts(new Product[0]);
 
-        Mockito.when(restTemplate.getForObject(Mockito.any(), Mockito.any())).thenReturn(response);
+        RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+        Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.any())).thenReturn(response);
+
+        this.service = new ServiceImpl(restTemplate);
     }
 
     @Test
